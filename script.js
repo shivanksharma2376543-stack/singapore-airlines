@@ -65,7 +65,7 @@ if (homeLink && home) {
     });
 }
 
-
+// Google Sheets form submission
 const form = document.getElementById('bookingForm');
 const successMsg = document.getElementById('successMessage');
 const errorMsg = document.getElementById('errorMessage');
@@ -82,6 +82,8 @@ if (form && successMsg && errorMsg) {
         errorMsg.style.display = 'none';
         
         const formData = new FormData(form);
+        const date = formData.get('date');
+        const route = formData.get('route');
         const roblox = formData.get('roblox');
         const discord = formData.get('discord');
         const notes = formData.get('notes') || 'No additional notes';
@@ -93,7 +95,7 @@ if (form && successMsg && errorMsg) {
         });
         
         try {
-            const response = await fetch('https://script.google.com/macros/s/AKfycbwYx9_mM0QW4FRjOF2kmH0zGGErALJfC2j8RHMvTj9O3iwwD-kFoDJ2njQ2nk7FA8Y3qw/exec', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbwUX1jgS02vaFBhI5_mK51zLY14Or7E5QkrkLrMovw2BWsuDMqicWRgSCQm8ogwDklbEQ/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
@@ -101,6 +103,8 @@ if (form && successMsg && errorMsg) {
                 },
                 body: JSON.stringify({
                     timestamp: timestamp,
+                    date: date,
+                    route: route,
                     roblox: roblox,
                     discord: discord,
                     notes: notes
