@@ -158,7 +158,7 @@ if (form && successMsg && errorMsg) {
         });
         
         try {
-            const response = await fetch('https://script.google.com/macros/s/AKfycbwYx9_mM0QW4FRjOF2kmH0zGGErALJfC2j8RHMvTj9O3iwwD-kFoDJ2njQ2nk7FA8Y3qw/exec', {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbwUX1jgS02vaFBhI5_mK51zLY14Or7E5QkrkLrMovw2BWsuDMqicWRgSCQm8ogwDklbEQ/exec", {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
