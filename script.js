@@ -189,7 +189,7 @@ if (form && successMsg && errorMsg) {
         });
 
         try {
-            await fetch('https://script.google.com/macros/s/AKfycbwYx9_mM0QW4FRjOF2kmH0zGGErALJfC2j8RHMvTj9O3iwwD-kFoDJ2njQ2nk7FA8Y3qw/exec', {
+            await fetch('https://script.google.com/macros/s/AKfycbx3Cjwth2OWL592kOJf4bWmC8TkPFY-0luma-qGuTNYbnYI3jxWofJyaL_t-CarS01K2Q/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
