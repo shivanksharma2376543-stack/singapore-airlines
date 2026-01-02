@@ -1,84 +1,3 @@
-const joinBtn = document.getElementById("joinBtn");
-const homeLink = document.getElementById("homeLink");
-const eventsLink = document.getElementById("eventsLink");
-const staffLink = document.getElementById("staffLink");
-const aboutLink = document.getElementById("aboutLink");
-const bookLink = document.getElementById("bookLink");
-
-const home = document.getElementById("home");
-const events = document.getElementById("events");
-const ourStaff = document.getElementById("ourStaff");
-const aboutUs = document.getElementById("aboutUs");
-const bookFlight = document.getElementById("bookFlight");
-
-if (joinBtn) {
-    joinBtn.addEventListener("click", () => {
-        window.open("https://discord.gg/KpucdrfdD3", "_blank");
-    });
-}
-
-function closeAll() {
-    [events, ourStaff, aboutUs, bookFlight].forEach(sec => {
-        if (sec) {
-            sec.classList.remove("open");
-            sec.style.maxHeight = null;
-        }
-    });
-}
-
-if (staffLink && ourStaff) {
-    staffLink.addEventListener("click", e => {
-        e.preventDefault();
-        closeAll();
-        ourStaff.classList.add("open");
-        setTimeout(() => {
-            ourStaff.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-    });
-}
-
-if (eventsLink && events) {
-    eventsLink.addEventListener("click", e => {
-        e.preventDefault();
-        closeAll();
-        events.classList.add("open");
-        setTimeout(() => {
-            events.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-    });
-}
-
-if (aboutLink && aboutUs) {
-    aboutLink.addEventListener("click", e => {
-        e.preventDefault();
-        closeAll();
-        aboutUs.classList.add("open");
-        setTimeout(() => {
-            aboutUs.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-    });
-}
-
-if (bookLink && bookFlight) {
-    bookLink.addEventListener("click", e => {
-        e.preventDefault();
-        closeAll();
-        bookFlight.classList.add("open");
-        setTimeout(() => {
-            bookFlight.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-    });
-}
-
-if (homeLink && home) {
-    homeLink.addEventListener("click", e => {
-        e.preventDefault();
-        closeAll();
-        home.scrollIntoView({ behavior: "smooth" });
-    });
-}
-
-
 const flightSchedule = {
     1: "Incheon (Seoul) - SQ612",
     2: "Barcelona - SQ378",
@@ -114,6 +33,7 @@ const flightSchedule = {
 
 const flightDateInput = document.getElementById('flightDate');
 const flightRouteInput = document.getElementById('flightRoute');
+const robloxInput = document.querySelector('input[name="roblox"]');
 
 if (flightDateInput && flightRouteInput) {
     flightDateInput.addEventListener('change', (e) => {
@@ -127,6 +47,96 @@ if (flightDateInput && flightRouteInput) {
         } else {
             flightRouteInput.value = "No flight scheduled for this date";
         }
+    });
+}
+
+
+async function validateRobloxUsername(username) {
+    if (!username || username.trim() === '') {
+        return { valid: false, message: 'Username cannot be empty' };
+    }
+
+    try {
+        const response = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                usernames: [username]
+            })
+        });
+
+        if (!response.ok) {
+            return { valid: false, message: 'Error validating username' };
+        }
+
+        const data = await response.json();
+
+        if (data.data && data.data.length > 0) {
+            return { valid: true, message: '✓ Username found!' };
+        } else {
+            return { valid: false, message: '✗ Username not found on Roblox' };
+        }
+    } catch (error) {
+        console.error('Roblox API error:', error);
+        return { valid: false, message: 'Could not verify username' };
+    }
+}
+
+if (robloxInput) {
+
+    const validationDiv = document.createElement('div');
+    validationDiv.id = 'robloxValidation';
+    validationDiv.style.fontSize = '0.9em';
+    validationDiv.style.marginTop = '5px';
+    validationDiv.style.display = 'none';
+    validationDiv.style.fontWeight = '600';
+    robloxInput.parentElement.appendChild(validationDiv);
+
+    let validationTimeout;
+
+    robloxInput.addEventListener('input', async (e) => {
+        const username = e.target.value.trim();
+        validationDiv.style.display = username ? 'block' : 'none';
+        validationDiv.textContent = '⏳ Checking...';
+        validationDiv.style.color = '#666';
+        robloxInput.style.borderColor = '#ddd';
+
+        // Clear previous timeout
+        clearTimeout(validationTimeout);
+
+        // Wait 500ms after user stops typing before validating
+        validationTimeout = setTimeout(async () => {
+            if (username) {
+                const result = await validateRobloxUsername(username);
+                validationDiv.textContent = result.message;
+                
+                if (result.valid) {
+                    validationDiv.style.color = '#4CAF50';
+                    robloxInput.style.borderColor = '#4CAF50';
+                    robloxInput.style.boxShadow = '0 0 8px rgba(76, 175, 80, 0.3)';
+                } else {
+                    validationDiv.style.color = '#f44336';
+                    robloxInput.style.borderColor = '#f44336';
+                    robloxInput.style.boxShadow = '0 0 8px rgba(244, 67, 54, 0.3)';
+                }
+                robloxInput.dataset.valid = result.valid;
+            }
+        }, 500);
+    });
+
+    robloxInput.addEventListener('focus', () => {
+        if (robloxInput.style.borderColor && robloxInput.style.borderColor !== 'rgb(221, 221, 221)') {
+            
+            return;
+        }
+        robloxInput.style.borderColor = '#003a8f';
+    });
+
+    robloxInput.addEventListener('blur', () => {
+        robloxInput.style.borderColor = '#ddd';
+        robloxInput.style.boxShadow = 'none';
     });
 }
 
@@ -152,10 +162,23 @@ if (form && successMsg && errorMsg) {
         const discord = formData.get('discord');
         const notes = formData.get('notes') || '';
 
-        
         console.log('Form Data:', { date, route, roblox, discord, notes });
 
         
+        if (!robloxInput.dataset.valid || robloxInput.dataset.valid === 'false') {
+            const validation = await validateRobloxUsername(roblox);
+            if (!validation.valid) {
+                errorMsg.style.display = 'block';
+                errorMsg.textContent = '✗ ' + validation.message + ' Please enter a valid Roblox username.';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Booking';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 5000);
+                return;
+            }
+        }
+
         if (!route || route.trim() === '' || route === 'Select a date first') {
             errorMsg.style.display = 'block';
             errorMsg.textContent = '✗ Please select a valid date first.';
@@ -222,6 +245,8 @@ if (form && successMsg && errorMsg) {
             form.reset();
             flightRouteInput.value = '';
             flightRouteInput.placeholder = 'Select a date first';
+            robloxInput.dataset.valid = 'false';
+            document.getElementById('robloxValidation').style.display = 'none';
 
             setTimeout(() => {
                 successMsg.style.display = 'none';
