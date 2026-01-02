@@ -112,7 +112,6 @@ const flightSchedule = {
     31: "New York (JFK) - SQ24"
 };
 
-
 const flightDateInput = document.getElementById('flightDate');
 const flightRouteInput = document.getElementById('flightRoute');
 
@@ -130,7 +129,6 @@ if (flightDateInput && flightRouteInput) {
         }
     });
 }
-
 
 const form = document.getElementById('bookingForm');
 const successMsg = document.getElementById('successMessage');
@@ -152,9 +150,34 @@ if (form && successMsg && errorMsg) {
         const route = formData.get('route');
         const roblox = formData.get('roblox');
         const discord = formData.get('discord');
-        const notes = formData.get('notes') || 'No additional notes';
+        const notes = formData.get('notes') || '';
 
         
+        console.log('Form Data:', { date, route, roblox, discord, notes });
+
+        
+        if (!route || route.trim() === '' || route === 'Select a date first') {
+            errorMsg.style.display = 'block';
+            errorMsg.textContent = '✗ Please select a valid date first.';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Booking';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+            return;
+        }
+
+        if (route === "No flight scheduled for this date") {
+            errorMsg.style.display = 'block';
+            errorMsg.textContent = '✗ No flight available on the selected date. Please choose another date.';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Booking';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+            return;
+        }
+
         const bookingKey = `bookings_${date}`;
         const currentCount = Number(localStorage.getItem(bookingKey)) || 0;
 
@@ -164,18 +187,6 @@ if (form && successMsg && errorMsg) {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Submit Booking';
 
-            setTimeout(() => {
-                errorMsg.style.display = 'none';
-            }, 5000);
-            return;
-        }
-
-        
-        if (route === "No flight scheduled for this date") {
-            errorMsg.style.display = 'block';
-            errorMsg.textContent = '✗ No flight available on the selected date. Please choose another date.';
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit Booking';
             setTimeout(() => {
                 errorMsg.style.display = 'none';
             }, 5000);
@@ -206,7 +217,6 @@ if (form && successMsg && errorMsg) {
             successMsg.style.display = 'block';
             successMsg.textContent = '✓ Booking submitted successfully! We\'ll contact you soon on Discord.';
 
-            
             localStorage.setItem(bookingKey, currentCount + 1);
 
             form.reset();
