@@ -1,3 +1,83 @@
+const joinBtn = document.getElementById("joinBtn");
+const homeLink = document.getElementById("homeLink");
+const eventsLink = document.getElementById("eventsLink");
+const staffLink = document.getElementById("staffLink");
+const aboutLink = document.getElementById("aboutLink");
+const bookLink = document.getElementById("bookLink");
+
+const home = document.getElementById("home");
+const events = document.getElementById("events");
+const ourStaff = document.getElementById("ourStaff");
+const aboutUs = document.getElementById("aboutUs");
+const bookFlight = document.getElementById("bookFlight");
+
+if (joinBtn) {
+joinBtn.addEventListener("click", () => {
+window.open("https://discord.gg/KpucdrfdD3", "_blank");
+});
+}
+
+function closeAll() {
+[events, ourStaff, aboutUs, bookFlight].forEach(sec => {
+if (sec) {
+sec.classList.remove("open");
+sec.style.maxHeight = null;
+}
+});
+}
+
+if (staffLink && ourStaff) {
+staffLink.addEventListener("click", e => {
+e.preventDefault();
+closeAll();
+ourStaff.classList.add("open");
+setTimeout(() => {
+ourStaff.scrollIntoView({ behavior: "smooth" });
+}, 100);
+});
+}
+
+if (eventsLink && events) {
+eventsLink.addEventListener("click", e => {
+e.preventDefault();
+closeAll();
+events.classList.add("open");
+setTimeout(() => {
+events.scrollIntoView({ behavior: "smooth" });
+}, 100);
+});
+}
+
+if (aboutLink && aboutUs) {
+aboutLink.addEventListener("click", e => {
+e.preventDefault();
+closeAll();
+aboutUs.classList.add("open");
+setTimeout(() => {
+aboutUs.scrollIntoView({ behavior: "smooth" });
+}, 100);
+});
+}
+
+if (bookLink && bookFlight) {
+bookLink.addEventListener("click", e => {
+e.preventDefault();
+closeAll();
+bookFlight.classList.add("open");
+setTimeout(() => {
+bookFlight.scrollIntoView({ behavior: "smooth" });
+}, 100);
+});
+}
+
+if (homeLink && home) {
+homeLink.addEventListener("click", e => {
+e.preventDefault();
+closeAll();
+home.scrollIntoView({ behavior: "smooth" });
+});
+}
+
 const flightSchedule = {
     1: "Incheon (Seoul) - SQ612",
     2: "Barcelona - SQ378",
@@ -85,7 +165,7 @@ async function validateRobloxUsername(username) {
 }
 
 if (robloxInput) {
-
+    
     const validationDiv = document.createElement('div');
     validationDiv.id = 'robloxValidation';
     validationDiv.style.fontSize = '0.9em';
@@ -103,10 +183,10 @@ if (robloxInput) {
         validationDiv.style.color = '#666';
         robloxInput.style.borderColor = '#ddd';
 
-        // Clear previous timeout
+       
         clearTimeout(validationTimeout);
 
-        // Wait 500ms after user stops typing before validating
+        
         validationTimeout = setTimeout(async () => {
             if (username) {
                 const result = await validateRobloxUsername(username);
@@ -164,7 +244,7 @@ if (form && successMsg && errorMsg) {
 
         console.log('Form Data:', { date, route, roblox, discord, notes });
 
-        
+        // roblux vrfxn
         if (!robloxInput.dataset.valid || robloxInput.dataset.valid === 'false') {
             const validation = await validateRobloxUsername(roblox);
             if (!validation.valid) {
